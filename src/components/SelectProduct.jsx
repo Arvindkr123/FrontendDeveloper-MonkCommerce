@@ -1,54 +1,104 @@
 /* eslint-disable react/prop-types */
+import { useAppContext } from "../context/AppContext";
 import { useState } from "react";
-import products from "./../assets/productsLists";
+
+const products = [
+  {
+    id: 77,
+    title: "Fog Linen Chambray Towel - Beige Stripe",
+    variants: [
+      {
+        id: 1,
+        product_id: 77,
+        title: "XS / Silver",
+        price: "49",
+      },
+      {
+        id: 2,
+        product_id: 77,
+        title: "S / Silver",
+        price: "49",
+      },
+      {
+        id: 3,
+        product_id: 77,
+        title: "M / Silver",
+        price: "49",
+      },
+    ],
+    image: {
+      id: 266,
+      product_id: 77,
+      src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/77/images/266/foglinenbeigestripetowel1b.1647248662.386.513.jpg?c=1",
+    },
+  },
+  {
+    id: 80,
+    title: "Orbit Terrarium - Large",
+    variants: [
+      {
+        id: 64,
+        product_id: 80,
+        title: "Default Title",
+        price: "109",
+      },
+    ],
+    image: {
+      id: 272,
+      product_id: 80,
+      src: "https://cdn11.bigcommerce.com/s-p1xcugzp89/products/80/images/272/roundterrariumlarge.1647248662.386.513.jpg?c=1",
+    },
+  },
+];
 
 const SelectProduct = ({ handleCloseModal }) => {
-  const [selectedProducts, setSelectedProducts] = useState({});
-  const [selectedVariants, setSelectedVariants] = useState({});
+  const { setProducts } = useAppContext();
+  const [selectedItems, setSelectedItems] = useState({});
 
-  //console.log(selectedVariants);
+  // Handle product selection
+  const handleProductChange = (product, variant) => {
+    const newSelectedItems = { ...selectedItems };
 
-  const handleProductChange = (productId) => {
-    setSelectedProducts((prevSelectedProducts) => {
-      const newSelection = !prevSelectedProducts[productId];
-      const updatedVariants = products
-        .find((product) => product.id === productId)
-        .variants.reduce((acc, variant) => {
-          acc[variant.id] = newSelection;
-          return acc;
-        }, {});
+    if (variant) {
+      newSelectedItems[product.id] = newSelectedItems[product.id] || {
+        variants: {},
+      };
+      newSelectedItems[product.id].variants[variant.id] =
+        !newSelectedItems[product.id].variants[variant.id];
 
-      setSelectedVariants((prevSelectedVariants) => ({
-        ...prevSelectedVariants,
-        ...updatedVariants,
-      }));
-      return { ...prevSelectedProducts, [productId]: newSelection };
-    });
-  };
+      // Check if at least one variant is selected
+      if (Object.values(newSelectedItems[product.id].variants).some((v) => v)) {
+        newSelectedItems[product.id].selected = true;
+      } else {
+        delete newSelectedItems[product.id];
+      }
+    } else {
+      if (newSelectedItems[product.id]?.selected) {
+        delete newSelectedItems[product.id];
+      } else {
+        newSelectedItems[product.id] = {
+          selected: true,
+          variants: Object.fromEntries(
+            product.variants.map((variant) => [variant.id, true])
+          ),
+        };
+      }
+    }
 
-  const handleVariantChange = (variantId) => {
-    setSelectedVariants((prevSelectedVariants) => {
-      const newSelection = !prevSelectedVariants[variantId];
-      const productId = products.find((product) =>
-        product.variants.some((variant) => variant.id === variantId)
-      ).id;
+    setSelectedItems(newSelectedItems);
 
-      const productVariants = products
-        .find((product) => product.id === productId)
-        .variants.reduce((acc, variant) => {
-          acc[variant.id] = prevSelectedVariants[variant.id];
-          return acc;
-        }, {});
+    // Convert selectedItems to array format
+    const selectedArray = Object.entries(newSelectedItems).map(
+      ([id, item]) => ({
+        id: parseInt(id),
+        selected: item.selected,
+        variants: Object.entries(item.variants)
+          .filter(([_, isSelected]) => isSelected)
+          .map(([variantId]) => parseInt(variantId)),
+      })
+    );
 
-      const allVariantsSelected = Object.values(productVariants).every(Boolean);
-
-      setSelectedProducts((prevSelectedProducts) => ({
-        ...prevSelectedProducts,
-        [productId]: allVariantsSelected,
-      }));
-
-      return { ...prevSelectedVariants, [variantId]: newSelection };
-    });
+    setProducts(selectedArray); // Update global state with array format
   };
 
   return (
@@ -71,8 +121,8 @@ const SelectProduct = ({ handleCloseModal }) => {
                 type="checkbox"
                 id={`product-${product.id}`}
                 name={`product-${product.id}`}
-                checked={selectedProducts[product.id] || false}
-                onChange={() => handleProductChange(product.id)}
+                checked={selectedItems[product.id]?.selected || false}
+                onChange={() => handleProductChange(product)}
               />
               <img src={product.image.src} alt={product.title} />
               <label htmlFor={`product-${product.id}`}>{product.title}</label>
@@ -87,8 +137,10 @@ const SelectProduct = ({ handleCloseModal }) => {
                       type="checkbox"
                       id={`variant-${variant.id}`}
                       name={`variant-${variant.id}`}
-                      checked={selectedVariants[variant.id] || false}
-                      onChange={() => handleVariantChange(variant.id)}
+                      checked={
+                        selectedItems[product.id]?.variants[variant.id] || false
+                      }
+                      onChange={() => handleProductChange(product, variant)}
                     />
                     <label htmlFor={`variant-${variant.id}`}>
                       {variant.title} - ${variant.price}
