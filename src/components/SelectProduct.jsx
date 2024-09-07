@@ -99,7 +99,34 @@ const SelectProduct = ({ handleCloseModal }) => {
       })
     );
 
-    setProducts(selectedArray); // Update global state with array format
+    // Update the global state with merged data
+    setProducts((prevProducts) => {
+      // Create a new array with the previous products and update the ones being changed
+      const updatedProducts = [...prevProducts];
+
+      selectedArray.forEach((newProduct) => {
+        const existingProductIndex = updatedProducts.findIndex(
+          (product) => product.id === newProduct.id
+        );
+
+        if (existingProductIndex > -1) {
+          // If the product already exists, merge the variants
+          const existingProduct = updatedProducts[existingProductIndex];
+          const mergedVariants = Array.from(
+            new Set([...existingProduct.variants, ...newProduct.variants])
+          );
+          updatedProducts[existingProductIndex] = {
+            ...existingProduct,
+            variants: mergedVariants,
+          };
+        } else {
+          // If the product doesn't exist, add it to the array
+          updatedProducts.push(newProduct);
+        }
+      });
+
+      return updatedProducts;
+    });
   };
 
   return (
