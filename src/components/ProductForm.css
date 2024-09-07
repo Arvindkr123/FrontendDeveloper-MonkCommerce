@@ -51,8 +51,9 @@
 }
 
 .modal {
-  background: white;
+  background: whitesmoke;
   width: 1000px;
+  border-radius: 5px;
 }
 
 .modal button {
@@ -162,4 +163,93 @@ section input {
 .variants-list {
   padding-left: 20px; /* Indents variants under their parent product */
   margin-top: 10px; /* Adds space above the variants list */
+}
+.discount-inputs {
+  display: flex;
+  gap: 10px; /* Adds space between the input and select elements */
+}
+
+.discount-inputs input,
+.discount-inputs select {
+  padding: 8px; /* Adds padding inside the input and select elements */
+  border: 1px solid #ccc; /* Adds a light gray border */
+  border-radius: 4px; /* Rounds the corners */
+  font-size: 14px; /* Sets the font size */
+  outline: none; /* Removes the outline when focused */
+  width: 100%; /* Allows them to take up the full width inside the container */
+}
+
+.discount-inputs input:focus,
+.discount-inputs select:focus {
+  border-color: #007bff; /* Changes the border color on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Adds a subtle shadow on focus */
+}
+
+/* .list-of-variants button {
+  border: none;
+  text-decoration: underline;
+  background: none;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+.list-of-variants button:hover {
+  color: #007bff;
+}
+
+.list-of-variants li {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.list-of-variants p {
+  font-size: 0.9rem;
+} */
+
+.list-of-variants {
+  list-style: none; /* Remove default list styling */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.list-of-variants li {
+  display: flex; /* Arrange items horizontally */
+  justify-content: space-between; /* Distribute space between elements */
+  align-items: center; /* Center items vertically */
+  padding: 10px 15px; /* Add some space around items */
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 5px; /* Rounded corners */
+  margin-bottom: 10px; /* Space between list items */
+  background-color: #f9f9f9; /* Light background color */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.list-of-variants li:hover {
+  background-color: #eaeaea; /* Slightly darker on hover */
+}
+
+.list-of-variants p {
+  margin: 0; /* Remove margin from paragraphs */
+  font-size: 16px; /* Adjust font size */
+  color: #333; /* Dark text color */
+}
+
+.list-of-variants p span {
+  margin-left: 10px; /* Space between title and span */
+  color: #666;
+  font-size: 14px; /* Lighter color for additional text */
+}
+
+.list-of-variants button {
+  font-size: 14px; /* Font size for button */
+  background: none; /* Primary button color */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Pointer cursor on hover */
+  /* Smooth transition for hover effect */
+  text-decoration: underline;
+}
+
+.list-of-variants button:hover {
+  color: #0056b3; /* Darker shade on hover */
 }

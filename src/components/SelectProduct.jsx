@@ -54,6 +54,7 @@ const products = [
 const SelectProduct = ({ handleCloseModal }) => {
   const { setProducts } = useAppContext();
   const [selectedItems, setSelectedItems] = useState({});
+  const [searchProduct, setSearchProduct] = useState("");
 
   // Handle product selection
   const handleProductChange = (product, variant) => {
@@ -110,47 +111,59 @@ const SelectProduct = ({ handleCloseModal }) => {
         </div>
       </header>
       <section>
-        <input type="search" placeholder="Search Product" />
+        <input
+          type="search"
+          placeholder="Search Product"
+          value={searchProduct}
+          onChange={(e) => setSearchProduct(e.target.value)}
+        />
       </section>
       <div className="products-list">
-        {products.map((product) => (
-          <div className="product-container" key={product.id}>
-            {/* Product Checkbox */}
-            <div className="checkbox-container">
-              <input
-                type="checkbox"
-                id={`product-${product.id}`}
-                name={`product-${product.id}`}
-                checked={selectedItems[product.id]?.selected || false}
-                onChange={() => handleProductChange(product)}
-              />
-              <img src={product.image.src} alt={product.title} />
-              <label htmlFor={`product-${product.id}`}>{product.title}</label>
-            </div>
-
-            {/* Render Variants if they exist */}
-            {product.variants && product.variants.length > 0 && (
-              <div className="variants-list">
-                {product.variants.map((variant) => (
-                  <div className="checkbox-container" key={variant.id}>
-                    <input
-                      type="checkbox"
-                      id={`variant-${variant.id}`}
-                      name={`variant-${variant.id}`}
-                      checked={
-                        selectedItems[product.id]?.variants[variant.id] || false
-                      }
-                      onChange={() => handleProductChange(product, variant)}
-                    />
-                    <label htmlFor={`variant-${variant.id}`}>
-                      {variant.title} - ${variant.price}
-                    </label>
-                  </div>
-                ))}
+        {products
+          .filter((productData) =>
+            productData.title
+              .toLowerCase()
+              .includes(searchProduct.toLowerCase())
+          )
+          .map((product) => (
+            <div className="product-container" key={product.id}>
+              {/* Product Checkbox */}
+              <div className="checkbox-container">
+                <input
+                  type="checkbox"
+                  id={`product-${product.id}`}
+                  name={`product-${product.id}`}
+                  checked={selectedItems[product.id]?.selected || false}
+                  onChange={() => handleProductChange(product)}
+                />
+                <img src={product.image.src} alt={product.title} />
+                <label htmlFor={`product-${product.id}`}>{product.title}</label>
               </div>
-            )}
-          </div>
-        ))}
+
+              {/* Render Variants if they exist */}
+              {product.variants && product.variants.length > 0 && (
+                <div className="variants-list">
+                  {product.variants.map((variant) => (
+                    <div className="checkbox-container" key={variant.id}>
+                      <input
+                        type="checkbox"
+                        id={`variant-${variant.id}`}
+                        name={`variant-${variant.id}`}
+                        checked={
+                          selectedItems[product.id]?.variants[variant.id] ||
+                          false
+                        }
+                        onChange={() => handleProductChange(product, variant)}
+                      />
+                      <label htmlFor={`variant-${variant.id}`}>
+                        {variant.title} - ${variant.price}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
       </div>
     </>
   );
