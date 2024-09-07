@@ -110,23 +110,25 @@ const AddProduct = ({ index, itemOfProduct, onDeleteProduct }) => {
       <div className=""></div>
 
       {/* Show variants of the selected product */}
-      <ul className="list-of-variants">
-        <button onClick={() => setShowProductVariants((prev) => !prev)}>
-          {showProductVariants ? "hide variants" : "show variants"}
-        </button>
-        {showProductVariants &&
-          foundProductWithMatchingVariants?.variants.map((variant) => (
-            <li key={variant.id}>
-              <p>
-                {variant.title}
-                <span>Rs {variant.price}</span>
-              </p>
-              <button onClick={() => deleteVariantHandler(variant.id)}>
-                x
-              </button>
-            </li>
-          ))}
-      </ul>
+      {Object.keys(itemOfProduct).length !== 0 && (
+        <ul className="list-of-variants">
+          <button onClick={() => setShowProductVariants((prev) => !prev)}>
+            {showProductVariants ? "hide variants" : "show variants"}
+          </button>
+          {showProductVariants &&
+            foundProductWithMatchingVariants?.variants.map((variant) => (
+              <li key={variant.id}>
+                <p>
+                  {variant.title}
+                  <span>Rs {variant.price}</span>
+                </p>
+                <button onClick={() => deleteVariantHandler(variant.id)}>
+                  x
+                </button>
+              </li>
+            ))}
+        </ul>
+      )}
 
       {/* Modal */}
       {isModalOpen && (
